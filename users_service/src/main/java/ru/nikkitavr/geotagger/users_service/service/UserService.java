@@ -30,17 +30,6 @@ public class UserService {
 
     public UserResponseDto createUserAndGet(UserRequestDto userRequestDto){
 
-        System.out.println(userRequestDto);
-        System.out.println(new User(userRequestDto));
-        System.out.println(userRepository.save(
-                new User(userRequestDto)
-        ));
-
-        System.out.println(userMapper.toUserDto(
-                userRepository.save(
-                        new User(userRequestDto)
-                )
-        ));
         return userMapper.toUserDto(
                 userRepository.save(
                         new User(userRequestDto)
