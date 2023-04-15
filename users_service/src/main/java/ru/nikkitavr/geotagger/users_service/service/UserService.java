@@ -3,6 +3,7 @@ package ru.nikkitavr.geotagger.users_service.service;
 import jakarta.ws.rs.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import ru.nikkitavr.geotagger.users_service.dto.UserRequestDto;
 import ru.nikkitavr.geotagger.users_service.dto.UserResponseDto;
 import ru.nikkitavr.geotagger.users_service.mapper.UserMapper;
 import ru.nikkitavr.geotagger.users_service.model.User;
@@ -15,7 +16,9 @@ public class UserService {
     private final UserMapper userMapper;
 
     @Autowired
-    public UserService(UserRepository userRepository, UserMapper userMapper) {
+    public UserService(
+            UserRepository userRepository,
+            UserMapper userMapper) {
         this.userRepository = userRepository;
         this.userMapper = userMapper;
     }
@@ -23,6 +26,26 @@ public class UserService {
     public UserResponseDto getUserById(long id){
 
         return userMapper.toUserDto(getUser(id));
+    }
+
+    public UserResponseDto createUserAndGet(UserRequestDto userRequestDto){
+
+        System.out.println(userRequestDto);
+        System.out.println(new User(userRequestDto));
+        System.out.println(userRepository.save(
+                new User(userRequestDto)
+        ));
+
+        System.out.println(userMapper.toUserDto(
+                userRepository.save(
+                        new User(userRequestDto)
+                )
+        ));
+        return userMapper.toUserDto(
+                userRepository.save(
+                        new User(userRequestDto)
+                )
+        );
     }
 
     private User getUser(long id){

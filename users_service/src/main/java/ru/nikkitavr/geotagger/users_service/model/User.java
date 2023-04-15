@@ -4,6 +4,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import org.springframework.context.annotation.Configuration;
+import ru.nikkitavr.geotagger.users_service.dto.UserRequestDto;
 
 @Table(name = "users")
 @Entity
@@ -57,5 +58,15 @@ public class User extends BaseEntity {
                 ", createdDate=" + createdDate +
                 ", updatedDate=" + updatedDate +
                 '}';
+    }
+
+    public User() {
+    }
+
+    public User(UserRequestDto userRequestDto){
+        setName(userRequestDto.getName());
+        setLogin(userRequestDto.getLogin());
+        setEmail(userRequestDto.getEmail());
+        setPhoneNumber(userRequestDto.getPhoneNumber());
     }
 }
