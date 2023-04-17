@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import ru.nikkitavr.geotagger.users_service.dto.ReceivedInviteDto;
 import ru.nikkitavr.geotagger.users_service.service.InviteService;
+import ru.nikkitavr.geotagger.users_service.service.RedisService;
 
 import java.util.List;
 
@@ -13,6 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 public class ReceivedInvitesController {
     private final InviteService inviteService;
+    private final RedisService redisService;
 
     @GetMapping
     public List<ReceivedInviteDto> getAllReceivedInvites(@PathVariable long userId){
@@ -22,6 +24,8 @@ public class ReceivedInvitesController {
     @PostMapping("/{inviteId}/accept")
     public void acceptReceivedInvite(@PathVariable long userId, @PathVariable long inviteId) throws JsonProcessingException {
         inviteService.acceptReceivedInvite(userId, inviteId);
+        redisService.saveUserFriendsId(userId);
+        redisService.saveUserFriendsId(inviteService.getInviteOwnerId(inviteId));
     }
 
     @PostMapping("/{inviteId}/decline")

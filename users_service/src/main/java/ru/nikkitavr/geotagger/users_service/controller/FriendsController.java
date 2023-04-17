@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.nikkitavr.geotagger.users_service.dto.UserResponseDto;
 import ru.nikkitavr.geotagger.users_service.service.FriendsService;
+import ru.nikkitavr.geotagger.users_service.service.RedisService;
 
 import java.util.List;
 
@@ -14,6 +15,7 @@ import java.util.List;
 @AllArgsConstructor
 public class FriendsController {
     private final FriendsService friendsService;
+    private final RedisService redisService;
 
     @GetMapping
     public List<UserResponseDto> getAllUserFriends(@PathVariable long user_id){
@@ -28,6 +30,8 @@ public class FriendsController {
     @DeleteMapping("/{friend_id}")
     public void deleteFriend(@PathVariable long user_id, @PathVariable long friend_id) throws JsonProcessingException {
         friendsService.deleteUserFriendById(user_id, friend_id);
+        redisService.saveUserFriendsId(user_id);
+        redisService.saveUserFriendsId(friend_id);
     }
 
 

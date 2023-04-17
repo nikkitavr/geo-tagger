@@ -27,10 +27,6 @@ public class InviteService {
     private final UserRepository userRepository;
     private final RelationshipsRepository relationshipsRepository;
 
-    private final UserMapper userMapper;
-    private final EntityManager entityManager;
-    private final RedisService redisService;
-    private final FriendsService friendsService;
 
     public void sendInvite(long userId, SentInviteRequestDto sentInviteRequestDto){
 
@@ -95,10 +91,6 @@ public class InviteService {
         Relationship relationship =  getRelatedInvite(userId, inviteId);
         relationship.setStatus(RelationshipStatus.FRIEND);
         long friendId = relationship.getUser().getId();
-        //entityManager.clear();
-        redisService.saveUserFriendsId(userId, friendsService.getFriendsId(userId));
-        redisService.saveUserFriendsId(friendId, friendsService.getFriendsId(friendId));
-
     }
 
     @Transactional
@@ -117,5 +109,14 @@ public class InviteService {
                 .filter(r -> r.getId() == inviteId && r.getStatus() == RelationshipStatus.INVITED)
                 .findFirst()
                 .orElseThrow(NotFoundException::new);
+    }
+
+    public long getInviteOwnerId(long inviteId){
+        Relationship relationship =
+                relationshipsRepository
+                        .findById(inviteId)
+                        .orElseThrow(NotFoundException::new);
+
+        return relationship.getUser().getId();
     }
 }

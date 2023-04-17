@@ -25,8 +25,6 @@ public class  FriendsService {
     private final UserRepository userRepository;
     private final RelationshipsRepository relationshipsRepository;
     private final UserMapper userMapper;
-    private final EntityManager entityManager;
-    private final RedisService redisService;
 
 
     public UserResponseDto getUserFriendById(long userId, long friendId){
@@ -57,9 +55,6 @@ public class  FriendsService {
                         .orElseThrow(NotFoundException::new)
                         .getId()
         );
-        entityManager.clear();
-        redisService.saveUserFriendsId(friendId, getFriendsId(friendId));
-        redisService.saveUserFriendsId(userId, getFriendsId(userId));
     }
 
     private List<User> getFriends(long userId){
