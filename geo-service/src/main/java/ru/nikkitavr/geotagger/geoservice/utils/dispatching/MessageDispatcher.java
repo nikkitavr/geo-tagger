@@ -26,7 +26,7 @@ public class MessageDispatcher {
 
     public <T extends MessageBaseEntity> void routeMessage(T messageDto, WebSocketSession session) throws InvocationTargetException, IllegalAccessException {
         if(!isRegistered){
-            System.out.println("NOT REGISTERED SERVICE. NOT REGISTERED SESSION");
+            System.out.println("NOT REGISTERED SERVICE.");
             return;
         }
         Method[] methods = serviceClass.getClass().getMethods();

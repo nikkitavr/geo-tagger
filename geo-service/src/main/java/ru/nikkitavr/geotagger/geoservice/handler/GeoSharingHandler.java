@@ -1,58 +1,40 @@
 package ru.nikkitavr.geotagger.geoservice.handler;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
+import org.apache.catalina.User;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
-import ru.nikkitavr.geotagger.geoservice.dto.ClientCommandMessageDto;
-import ru.nikkitavr.geotagger.geoservice.dto.ClientDataMessageDto;
-import ru.nikkitavr.geotagger.geoservice.service.GeoSharingService;
-import ru.nikkitavr.geotagger.geoservice.utils.Method;
-import ru.nikkitavr.geotagger.geoservice.utils.dispatching.MessageBaseEntity;
+import ru.nikkitavr.geotagger.geoservice.controller.GeoSharingHandleController;
+import ru.nikkitavr.geotagger.geoservice.service.UsersGeoService;
+import ru.nikkitavr.geotagger.geoservice.utils.JsonMapper;
 import ru.nikkitavr.geotagger.geoservice.utils.dispatching.MessageDispatcher;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
 @Component
+
 public class GeoSharingHandler extends TextWebSocketHandler {
 
 //    String income;
 //    private Thread workerThread;
-    ObjectMapper objectMapper;
     MessageDispatcher messageDispatcher;
+    JsonMapper jsonMapper;
 
-    @Autowired
-    public GeoSharingHandler(ObjectMapper objectMapper,
-                             GeoSharingService geoSharingService,
-                             MessageDispatcher messageDispatcher) {
-        this.objectMapper = objectMapper;
+    public GeoSharingHandler(MessageDispatcher messageDispatcher, JsonMapper jsonMapper, GeoSharingHandleController geoSharingHandleController) {
         this.messageDispatcher = messageDispatcher;
-        this.messageDispatcher.registerServiceClass(geoSharingService);
-        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, true);
+        this.jsonMapper = jsonMapper;
+        messageDispatcher.registerServiceClass(geoSharingHandleController);
     }
 
     @Override
     public void handleTextMessage(WebSocketSession session, TextMessage message) throws IOException, InvocationTargetException, IllegalAccessException {
-        messageDispatcher.routeMessage(getJson(message), session);
-        //handleMessage(session, message);
-    }
-
-    private MessageBaseEntity getJson(TextMessage message) throws JsonProcessingException {
-        JsonNode jsonNode = objectMapper.readTree(message.getPayload());
-        Method method = Method.getCommandFromString(jsonNode.get("method").asText());
-
-        if(method == Method.POST){
-            ClientDataMessageDto dto = objectMapper.readValue(message.getPayload(), ClientDataMessageDto.class);
-            System.out.println(dto);
-            return dto;
-        }
-        return  objectMapper.readValue(message.getPayload(), ClientCommandMessageDto.class);
+        messageDispatcher.routeMessage(
+                jsonMapper.getJson(message),
+                session
+        );
     }
 }
 //        income = message.getPayload();
