@@ -1,6 +1,9 @@
 package ru.nikkitavr.geotagger.users_service.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import jakarta.persistence.EntityManager;
 import jakarta.ws.rs.NotFoundException;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
@@ -19,19 +22,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@AllArgsConstructor
 public class InviteService {
-
-    @Autowired
-    public InviteService(UserRepository userRepository, RelationshipsRepository relationshipsRepository, UserMapper userMapper) {
-        this.userRepository = userRepository;
-        this.relationshipsRepository = relationshipsRepository;
-        this.userMapper = userMapper;
-    }
-
     private final UserRepository userRepository;
     private final RelationshipsRepository relationshipsRepository;
 
     private final UserMapper userMapper;
+    private final EntityManager entityManager;
+    private final RedisService redisService;
+    private final FriendsService friendsService;
 
     public void sendInvite(long userId, SentInviteRequestDto sentInviteRequestDto){
 
@@ -92,10 +91,15 @@ public class InviteService {
     }
 
     @Transactional
-    public void acceptReceivedInvite(long userId, long inviteId){
-        getRelatedInvite(userId, inviteId).setStatus(RelationshipStatus.FRIEND);
-    }
+    public void acceptReceivedInvite(long userId, long inviteId) throws JsonProcessingException {
+        Relationship relationship =  getRelatedInvite(userId, inviteId);
+        relationship.setStatus(RelationshipStatus.FRIEND);
+        long friendId = relationship.getUser().getId();
+        //entityManager.clear();
+        redisService.saveUserFriendsId(userId, friendsService.getFriendsId(userId));
+        redisService.saveUserFriendsId(friendId, friendsService.getFriendsId(friendId));
 
+    }
 
     @Transactional
     public void declineReceivedInvite(long userId, long inviteId){

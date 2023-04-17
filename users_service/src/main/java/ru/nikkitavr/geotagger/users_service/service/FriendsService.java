@@ -1,6 +1,9 @@
 package ru.nikkitavr.geotagger.users_service.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import jakarta.persistence.EntityManager;
 import jakarta.ws.rs.NotFoundException;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
@@ -12,22 +15,19 @@ import ru.nikkitavr.geotagger.users_service.model.User;
 import ru.nikkitavr.geotagger.users_service.repository.RelationshipsRepository;
 import ru.nikkitavr.geotagger.users_service.repository.UserRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@AllArgsConstructor
 public class  FriendsService {
-
-    @Autowired
-    public FriendsService(UserRepository userRepository, RelationshipsRepository relationshipsRepository, UserMapper userMapper) {
-        this.userRepository = userRepository;
-        this.relationshipsRepository = relationshipsRepository;
-        this.userMapper = userMapper;
-    }
 
     private final UserRepository userRepository;
     private final RelationshipsRepository relationshipsRepository;
-
     private final UserMapper userMapper;
+    private final EntityManager entityManager;
+    private final RedisService redisService;
+
 
     public UserResponseDto getUserFriendById(long userId, long friendId){
         return userMapper.toUserDto(
@@ -43,7 +43,7 @@ public class  FriendsService {
         return userMapper.toUserDto(getFriends(userId));
     }
 
-    public void deleteUserFriendById(long userId, long friendId){
+    public void deleteUserFriendById(long userId, long friendId) throws JsonProcessingException {
         relationshipsRepository.deleteById(
                 userRepository
                         .findById(userId)
@@ -57,6 +57,9 @@ public class  FriendsService {
                         .orElseThrow(NotFoundException::new)
                         .getId()
         );
+        entityManager.clear();
+        redisService.saveUserFriendsId(friendId, getFriendsId(friendId));
+        redisService.saveUserFriendsId(userId, getFriendsId(userId));
     }
 
     private List<User> getFriends(long userId){
@@ -65,6 +68,16 @@ public class  FriendsService {
                 .orElseThrow(NotFoundException::new);
 
         return user.getFriends();
+    }
+
+    public List<Long> getFriendsId(long userId){
+        List<User> friends = getFriends(userId);
+        List<Long> friendsId = new ArrayList<>(friends.size());
+        for (User friend:
+             friends) {
+            friendsId.add(friend.getId());
+        }
+        return friendsId;
     }
 
 

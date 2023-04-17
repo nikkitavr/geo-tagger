@@ -2,6 +2,8 @@ package ru.nikkitavr.geotagger.users_service.model;
 
 import jakarta.persistence.*;
 import jakarta.ws.rs.NotFoundException;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Where;
 import org.hibernate.annotations.WhereJoinTable;
 import org.springframework.context.annotation.Configuration;
@@ -13,6 +15,8 @@ import java.util.Set;
 
 @Table(name = "users")
 @Entity
+@Data
+@NoArgsConstructor
 public class User extends BaseEntity {
     String name;
     String login;
@@ -76,121 +80,53 @@ public class User extends BaseEntity {
         return allRelationships;
     }
 
-    public Relationship getRelationshipWhereFriendId(long friendId){
-        for (Relationship r:
-             ownedRelationships) {
-            if(r.getFriend().getId() == friendId){
-                return r;
-            }
-        }
-
-        for (Relationship r:
-                relatedToRelationships) {
-            if(r.getUser().getId() == friendId){
-                return r;
-            }
-        }
-        throw new NotFoundException();
-    }
-
-    public List<Relationship> getOwnedRelationships() {
-        return ownedRelationships;
-    }
-
-    public void setOwnedRelationships(List<Relationship> ownedRelationships) {
-        this.ownedRelationships = ownedRelationships;
-    }
-
-    public List<Relationship> getRelatedToRelationships() {
-        return relatedToRelationships;
-    }
-
-    public void setRelatedToRelationships(List<Relationship> relatedToRelationships) {
-        this.relatedToRelationships = relatedToRelationships;
-    }
-
-    //    @ManyToMany
-//    @JoinTable(
-//            name="friends",
-//            joinColumns = { @JoinColumn(name="user_id") },
-//            inverseJoinColumns = { @JoinColumn(name="friend_id")}
-//    )
-//    @WhereJoinTable(clause="status = 'accepted'")
-//    List<User> friendsOwner;
-//
-//    @ManyToMany(mappedBy = "friendsOwner")
-//    @WhereJoinTable(clause="status = 'accepted'")
-//    List<User> friendsOwning;
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getLogin() {
-        return login;
-    }
-
-    public void setLogin(String login) {
-        this.login = login;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
-
-//    public List<User> getFriendsOwner() {
-//        return friendsOwner;
+//    public List<Relationship> getOwnedRelationships() {
+//        return ownedRelationships;
 //    }
 //
-//    public void setFriendsOwner(List<User> friendsOwner) {
-//        this.friendsOwner = friendsOwner;
+//    public void setOwnedRelationships(List<Relationship> ownedRelationships) {
+//        this.ownedRelationships = ownedRelationships;
 //    }
 //
-//    public List<User> getFriendsOwning() {
-//        return friendsOwning;
+//    public List<Relationship> getRelatedToRelationships() {
+//        return relatedToRelationships;
 //    }
 //
-//    public void setFriendsOwning(List<User> friendsOwning) {
-//        this.friendsOwning = friendsOwning;
+//    public void setRelatedToRelationships(List<Relationship> relatedToRelationships) {
+//        this.relatedToRelationships = relatedToRelationships;
+//    }
+//    public String getName() {
+//        return name;
 //    }
 //
-//    public List<User> getAllFriends() {
-//        ArrayList<User> allFriends = new ArrayList<User>(friendsOwner.size() + friendsOwning.size());
-//        allFriends.addAll(friendsOwner);
-//        allFriends.addAll(friendsOwning);
-//        return allFriends;
+//    public void setName(String name) {
+//        this.name = name;
 //    }
-    @Override
-    public String toString() {
-        return "User{" +
-                "name='" + name + '\'' +
-                ", login='" + login + '\'' +
-                ", email='" + email + '\'' +
-                ", phoneNumber='" + phoneNumber + '\'' +
-                ", id=" + id +
-                ", createdDate=" + createdDate +
-                ", updatedDate=" + updatedDate +
-                '}';
-    }
+//
+//    public String getLogin() {
+//        return login;
+//    }
+//
+//    public void setLogin(String login) {
+//        this.login = login;
+//    }
+//
+//    public String getEmail() {
+//        return email;
+//    }
+//
+//    public void setEmail(String email) {
+//        this.email = email;
+//    }
+//
+//    public String getPhoneNumber() {
+//        return phoneNumber;
+//    }
+//
+//    public void setPhoneNumber(String phoneNumber) {
+//        this.phoneNumber = phoneNumber;
+//    }
 
-    public User() {
-    }
 
     public User(UserRequestDto userRequestDto){
         setName(userRequestDto.getName());

@@ -1,6 +1,7 @@
 package ru.nikkitavr.geotagger.users_service.service;
 
 import jakarta.ws.rs.NotFoundException;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
@@ -14,14 +15,8 @@ import java.util.List;
 import java.util.Set;
 
 @Service
+@AllArgsConstructor
 public class UserService {
-    @Autowired
-    public UserService(
-            UserRepository userRepository,
-            UserMapper userMapper) {
-        this.userRepository = userRepository;
-        this.userMapper = userMapper;
-    }
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;

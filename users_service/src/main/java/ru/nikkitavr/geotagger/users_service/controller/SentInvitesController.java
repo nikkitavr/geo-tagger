@@ -1,5 +1,7 @@
 package ru.nikkitavr.geotagger.users_service.controller;
 
+import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.nikkitavr.geotagger.users_service.dto.SentInviteRequestDto;
 import ru.nikkitavr.geotagger.users_service.dto.SentInviteResponseDto;
@@ -9,14 +11,9 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/users/{userId}/invites-sent")
+@AllArgsConstructor
 public class SentInvitesController {
-
     private final InviteService inviteService;
-
-
-    public SentInvitesController(InviteService inviteService) {
-        this.inviteService = inviteService;
-    }
 
     @PostMapping
     public void sendInvite(@PathVariable long userId, @RequestBody SentInviteRequestDto sentInvitesDto){
