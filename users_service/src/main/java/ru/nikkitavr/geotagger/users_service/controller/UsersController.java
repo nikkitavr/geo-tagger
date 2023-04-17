@@ -1,11 +1,6 @@
 package ru.nikkitavr.geotagger.users_service.controller;
 
-import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
-import ru.nikkitavr.geotagger.users_service.dto.UserRequestDto;
 import ru.nikkitavr.geotagger.users_service.dto.UserResponseDto;
 import ru.nikkitavr.geotagger.users_service.service.UserService;
 
@@ -19,10 +14,7 @@ public class UsersController {
         this.userService = userService;
     }
 
-    @PostMapping
-    public UserResponseDto addUser(@RequestBody UserRequestDto userRequestDto){
-        return userService.createUserAndGet(userRequestDto);
-    }
+
     @GetMapping("/{id}")
     public UserResponseDto getUser(@PathVariable long id){
         return userService.getUserById(id);

@@ -7,6 +7,7 @@ import ru.nikkitavr.geotagger.users_service.dto.UserResponseDto;
 import ru.nikkitavr.geotagger.users_service.model.User;
 
 import java.util.List;
+import java.util.Set;
 
 @Mapper(
         componentModel = "spring",
@@ -16,5 +17,5 @@ public interface UserMapper {
 
     UserResponseDto toUserDto(User user);
 
-    //List<UserResponseDto> toUserDto(List<User> user);
+    List<UserResponseDto> toUserDto(List<User> user);
 }
