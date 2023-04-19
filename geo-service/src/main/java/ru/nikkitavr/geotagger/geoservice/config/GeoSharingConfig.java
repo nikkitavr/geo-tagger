@@ -35,6 +35,8 @@ public class GeoSharingConfig implements WebSocketConfigurer {
                 setAllowedOrigins("*");
     }
 
+
+
 //    @Bean
 //    public WebSocketHandler myHandler(){
 //        return new GeoSharingHandler(objectMapper());
