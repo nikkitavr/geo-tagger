@@ -38,7 +38,7 @@ public class JwtFilter extends OncePerRequestFilter {
             } else {
                 try {
                     //Получаем UserDetails с помощью login в JWT
-                    long userId = Long.parseLong(jwtUtil.validateTokenAndRetrieveClaim(jwt).get("id"));
+                    long userId = jwtUtil.validateTokenAndRetrieveClaim(jwt).get("id").asLong();
                     UserDetails userDetails = userDetailsService.loadUserById(userId);
 
 

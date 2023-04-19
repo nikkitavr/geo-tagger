@@ -64,6 +64,7 @@ public class SecurityConfig {
                 .authenticationProvider(authenticationProvider())
                 .authorizeHttpRequests()
                     .requestMatchers("/auth/login", "/auth/registration").permitAll()
+                    //.requestMatchers("/auth").hasRole("USER")
                     .anyRequest().authenticated()
                 .and()
                 //.exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()

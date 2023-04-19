@@ -1,15 +1,21 @@
 package ru.nikkita.vr.geotagger.authservice.security;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.transaction.annotation.Transactional;
 import ru.nikkita.vr.geotagger.authservice.model.User;
 
 import java.util.Collection;
 import java.util.stream.Collectors;
 
-public record UserDetailsImpl(User user) implements UserDetails {
+@AllArgsConstructor
+@Data
+public class UserDetailsImpl implements UserDetails {
+    private User user;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return user.getRolesAsStringList()

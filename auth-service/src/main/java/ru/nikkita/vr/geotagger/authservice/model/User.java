@@ -18,7 +18,7 @@ public class User extends BaseEntity {
     private String email;
     @Column(name = "phone_number")
     private String phoneNumber;
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             schema = "public",
             name= "roles_users",

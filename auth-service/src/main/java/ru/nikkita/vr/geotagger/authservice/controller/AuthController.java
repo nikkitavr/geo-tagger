@@ -3,10 +3,7 @@ package ru.nikkita.vr.geotagger.authservice.controller;
 import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import ru.nikkita.vr.geotagger.authservice.dto.UserLoginRequestDto;
 import ru.nikkita.vr.geotagger.authservice.dto.UserRegistrationRequestDto;
 import ru.nikkita.vr.geotagger.authservice.model.User;
@@ -27,7 +24,7 @@ public class AuthController {
     private final AuthenticationManager authenticationManager;
 
     @PostMapping("/login")
-    public Map<String, String> loginPage(
+    public Map<String, String> performLogin(
             @RequestBody UserLoginRequestDto userLoginRequestDto
     ) {
         UsernamePasswordAuthenticationToken authInputToken =
@@ -57,5 +54,10 @@ public class AuthController {
                 jwtUtil.generateToken(user.getId(), user.getRolesAsStringList())
         );
     }
+
+//    @GetMapping()
+//    public String getGodToken(){
+//        return jwtUtil.generateGodToken();
+//    }
 
 }
