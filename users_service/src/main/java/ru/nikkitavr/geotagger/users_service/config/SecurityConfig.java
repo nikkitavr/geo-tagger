@@ -1,38 +1,22 @@
-package ru.nikkita.vr.geotagger.authservice.config;
+package ru.nikkitavr.geotagger.users_service.config;
 
-import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration;
-import ru.nikkita.vr.geotagger.authservice.Utils.Roles;
+import ru.nikkitavr.geotagger.users_service.security.UserDetailsImpl;
 
-import java.util.Collection;
+import java.util.Collections;
 
 
 @EnableMethodSecurity
 @AllArgsConstructor
 @Configuration
 public class SecurityConfig {
-
-    private final UserDetailsService userDetailsService;
     private final JwtFilter jwtFilter;
 
 
@@ -65,10 +49,10 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.cors().and().csrf().disable()
-                .authenticationProvider(authenticationProvider())
+                //.authenticationProvider(authenticationProvider())
                 .authorizeHttpRequests()
-                    .requestMatchers("/auth/login", "/auth/registration", "/auth/god").permitAll()
-                    //.requestMatchers("/auth").hasRole("USER")
+                    .requestMatchers("/api/inner/users").hasRole("ADMIN")
+                    .requestMatchers("/me/**").hasRole("USER")
                     .anyRequest().authenticated()
                 .and()
                 //.exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
@@ -85,20 +69,20 @@ public class SecurityConfig {
         auth.userDetailsService(personDetailsServiceImpl)
                 .passwordEncoder(getPasswordEncoder());
     }*/
-    @Bean
-    public DaoAuthenticationProvider authenticationProvider() {
-        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-
-        authProvider.setUserDetailsService(userDetailsService);
-        authProvider.setPasswordEncoder(passwordEncoder());
-
-        return authProvider;
-    }
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+//    @Bean
+//    public DaoAuthenticationProvider authenticationProvider() {
+//        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+//
+//        authProvider.setUserDetailsService(userDetailsService);
+//        authProvider.setPasswordEncoder(passwordEncoder());
+//
+//        return authProvider;
+//    }
+//
+//    @Bean
+//    public PasswordEncoder passwordEncoder() {
+//        return new BCryptPasswordEncoder();
+//    }
 
     //Для проверки корректности логина и пароля
     /*@Bean
@@ -106,8 +90,8 @@ public class SecurityConfig {
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
     }*/
-    @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfiguration) throws Exception {
-        return authConfiguration.getAuthenticationManager();
-    }
+//    @Bean
+//    public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfiguration) throws Exception {
+//        return authConfiguration.getAuthenticationManager();
+//    }
 }

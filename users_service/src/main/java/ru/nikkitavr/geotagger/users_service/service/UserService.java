@@ -2,9 +2,8 @@ package ru.nikkitavr.geotagger.users_service.service;
 
 import jakarta.ws.rs.NotFoundException;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.nikkitavr.geotagger.users_service.dto.UserRequestDto;
 import ru.nikkitavr.geotagger.users_service.dto.UserResponseDto;
 import ru.nikkitavr.geotagger.users_service.mapper.UserMapper;
@@ -12,7 +11,6 @@ import ru.nikkitavr.geotagger.users_service.model.User;
 import ru.nikkitavr.geotagger.users_service.repository.UserRepository;
 
 import java.util.List;
-import java.util.Set;
 
 @Service
 @AllArgsConstructor
@@ -27,21 +25,23 @@ public class UserService {
 
     public UserResponseDto getUserById(long id){
 
+        //TODO: Исправить маппер, не маппит
         return userMapper.toUserDto(getUser(id));
     }
 
-    public UserResponseDto createUserAndGet(UserRequestDto userRequestDto){
+    public User getUserByUsername(String username){
+        return userRepository.findByLogin(username)
+                .orElseThrow(() -> new NotFoundException("Not found book by username = " + username));
+    }
 
-        return userMapper.toUserDto(
-                userRepository.save(
-                        new User(userRequestDto)
-                )
-        );
+    @Transactional
+    public void createUser(UserRequestDto userRequestDto){
+        userRepository.save(new User(userRequestDto));
     }
 
     private User getUser(long id){
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Not found book by id = " + id));
+                .orElseThrow(() -> new NotFoundException("Not found user by id = " + id));
         System.out.println(user);
         return user;
     }

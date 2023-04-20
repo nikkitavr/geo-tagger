@@ -1,10 +1,15 @@
 package ru.nikkita.vr.geotagger.authservice.mapper;
 
 import org.mapstruct.Mapper;
-import ru.nikkita.vr.geotagger.authservice.dto.UserRegistrationRequestDto;
+import org.mapstruct.ReportingPolicy;
+import ru.nikkita.vr.geotagger.authservice.dto.UserServiceAddUserRequestDto;
 import ru.nikkita.vr.geotagger.authservice.model.User;
 
-@Mapper
+@Mapper(
+        componentModel = "spring",
+        unmappedTargetPolicy = ReportingPolicy.IGNORE
+)
 public interface UserMapper {
-    User toUser(UserRegistrationRequestDto dto);
+    UserServiceAddUserRequestDto toUserServiceRequestDto (User user);
+
 }

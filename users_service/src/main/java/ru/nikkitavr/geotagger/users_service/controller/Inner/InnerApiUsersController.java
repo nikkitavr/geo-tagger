@@ -1,6 +1,7 @@
 package ru.nikkitavr.geotagger.users_service.controller.Inner;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 import ru.nikkitavr.geotagger.users_service.dto.UserRequestDto;
 import ru.nikkitavr.geotagger.users_service.dto.UserResponseDto;
@@ -10,18 +11,13 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/inner/users")
+@AllArgsConstructor
 public class InnerApiUsersController {
-
-    @Autowired
-    public InnerApiUsersController(UserService userService) {
-        this.userService = userService;
-    }
-
     private final UserService userService;
 
     @PostMapping
-    public UserResponseDto addUser(@RequestBody UserRequestDto userRequestDto){
-        return userService.createUserAndGet(userRequestDto);
+    public void addUser(@RequestBody UserRequestDto userRequestDto){
+        userService.createUser(userRequestDto);
     }
 
     @GetMapping

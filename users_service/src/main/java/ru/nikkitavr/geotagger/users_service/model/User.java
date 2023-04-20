@@ -18,7 +18,6 @@ import java.util.Set;
 @Data
 @NoArgsConstructor
 public class User extends BaseEntity {
-    String name;
     String login;
     String email;
     @Column(name = "phone_number")
@@ -80,56 +79,7 @@ public class User extends BaseEntity {
         return allRelationships;
     }
 
-//    public List<Relationship> getOwnedRelationships() {
-//        return ownedRelationships;
-//    }
-//
-//    public void setOwnedRelationships(List<Relationship> ownedRelationships) {
-//        this.ownedRelationships = ownedRelationships;
-//    }
-//
-//    public List<Relationship> getRelatedToRelationships() {
-//        return relatedToRelationships;
-//    }
-//
-//    public void setRelatedToRelationships(List<Relationship> relatedToRelationships) {
-//        this.relatedToRelationships = relatedToRelationships;
-//    }
-//    public String getName() {
-//        return name;
-//    }
-//
-//    public void setName(String name) {
-//        this.name = name;
-//    }
-//
-//    public String getLogin() {
-//        return login;
-//    }
-//
-//    public void setLogin(String login) {
-//        this.login = login;
-//    }
-//
-//    public String getEmail() {
-//        return email;
-//    }
-//
-//    public void setEmail(String email) {
-//        this.email = email;
-//    }
-//
-//    public String getPhoneNumber() {
-//        return phoneNumber;
-//    }
-//
-//    public void setPhoneNumber(String phoneNumber) {
-//        this.phoneNumber = phoneNumber;
-//    }
-
-
     public User(UserRequestDto userRequestDto){
-        setName(userRequestDto.getName());
         setLogin(userRequestDto.getLogin());
         setEmail(userRequestDto.getEmail());
         setPhoneNumber(userRequestDto.getPhoneNumber());

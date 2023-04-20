@@ -1,4 +1,4 @@
-package ru.nikkita.vr.geotagger.authservice.config;
+package ru.nikkitavr.geotagger.users_service.config;
 
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import jakarta.servlet.FilterChain;
@@ -6,13 +6,13 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-import ru.nikkita.vr.geotagger.authservice.security.JwtUtil;
-import ru.nikkita.vr.geotagger.authservice.service.UserDetailsServiceImpl;
+import ru.nikkitavr.geotagger.users_service.security.JwtUtil;
+import ru.nikkitavr.geotagger.users_service.security.UserDetailsImpl;
+import ru.nikkitavr.geotagger.users_service.security.UserDetailsJwtMapper;
 
 import java.io.IOException;
 
@@ -20,7 +20,7 @@ import java.io.IOException;
 @Component
 public class JwtFilter extends OncePerRequestFilter {
     private final JwtUtil jwtUtil;
-    private final UserDetailsServiceImpl userDetailsService;
+    private final UserDetailsJwtMapper userDetailsJwtMapper;
     @Override
     protected void doFilterInternal(
             HttpServletRequest request,
@@ -37,20 +37,19 @@ public class JwtFilter extends OncePerRequestFilter {
                         "Invalid JWT Token in Bearer Header");
             } else {
                 try {
-                    //Получаем UserDetails с помощью username в JWT
-                    UserDetails userDetails =
-                            userDetailsService.loadUserByUsername(
-                                    jwtUtil.validateTokenAndRetrieveClaim(jwt)
-                                            .get("username").asString()
+                    //Получаем UserDetails с помощью login в JWT
+                    UserDetailsImpl userDetails =
+                            userDetailsJwtMapper.claimsToUserDetails(
+                                jwtUtil.validateTokenAndRetrieveClaim(jwt)
                             );
-
-
                     //Здесь мы помещаем userDetails в AuthContext, который потом может запросить в методе
                     //Этот UserDetails также будет использоваться для авторизации и прочего в SecurityConfig
-                    UsernamePasswordAuthenticationToken authToken =
-                            new UsernamePasswordAuthenticationToken(userDetails,
-                                    userDetails.getPassword(),
-                                    userDetails.getAuthorities());
+                    PreAuthenticatedAuthenticationToken authToken =
+                            new PreAuthenticatedAuthenticationToken(
+                                    userDetails,
+                                    jwt,
+                                    userDetails.getAuthorities()
+                            );
 
                     if (SecurityContextHolder.getContext().getAuthentication() == null) {
                         SecurityContextHolder.getContext().setAuthentication(authToken);
@@ -58,7 +57,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
                     //Т.е эта вещь скорее для авторизации. SpringSecurity (Config) работает
                     //с классом UserDetails. Видимо надо будет создать отдельный UserDetails
-                    //который будет содержать чисто роль и  id. Хз пока что
+                    //который будет содержать чисто роль и id. Хз пока что
                 } catch (JWTVerificationException exc) {
                     response.sendError(HttpServletResponse.SC_BAD_REQUEST,
                             "Invalid JWT Token");

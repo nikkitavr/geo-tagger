@@ -30,7 +30,7 @@ public class InviteService {
 
     public void sendInvite(long userId, SentInviteRequestDto sentInviteRequestDto){
 
-        User targetUser = userRepository.findByLogin(sentInviteRequestDto.getLogin())
+        User targetUser = userRepository.findByLogin(sentInviteRequestDto.getRecipientLogin())
                 .orElseThrow(NotFoundException::new);
         User ownerUser = userRepository.findById(userId)
                 .orElseThrow(NotFoundException::new);

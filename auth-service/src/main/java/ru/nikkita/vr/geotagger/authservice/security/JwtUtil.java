@@ -26,11 +26,11 @@ public class JwtUtil {
     @Value("${security.jwt.issuer}")
     private String issuer;
 
-    public String generateToken(long userId, List<String> roles){
+    public String generateToken(String username, List<String> roles){
         Date expirationDate = Date.from(ZonedDateTime.now().plusHours(livingTimeHours).toInstant());
         return JWT.create()
                 .withSubject(subject)
-                .withClaim("id", userId)
+                .withClaim("username", username)
                 .withClaim("roles", roles)
                 .withIssuedAt(new Date())
                 .withIssuer(issuer)
@@ -38,16 +38,17 @@ public class JwtUtil {
                 .sign(Algorithm.HMAC256(secret));
     }
 
-//    public String generateGodToken(){
-//        Date expirationDate = Date.from(ZonedDateTime.now().plusYears(10).toInstant());
-//        return JWT.create()
-//                .withSubject(subject)
-//                .withClaim("roles", Collections.singletonList(Roles.ROLE_ADMIN.name()))
-//                .withIssuedAt(new Date())
-//                .withIssuer(issuer)
-//                .withExpiresAt(expirationDate)
-//                .sign(Algorithm.HMAC256(secret));
-//    }
+    public String generateGodToken(){
+        Date expirationDate = Date.from(ZonedDateTime.now().plusYears(10).toInstant());
+        return JWT.create()
+                .withSubject(subject)
+                .withClaim("username","admin")
+                .withClaim("roles", Collections.singletonList(Roles.ROLE_ADMIN.name()))
+                .withIssuedAt(new Date())
+                .withIssuer(issuer)
+                .withExpiresAt(expirationDate)
+                .sign(Algorithm.HMAC256(secret));
+    }
 
     public Map<String, Claim> validateTokenAndRetrieveClaim(String token) throws JWTVerificationException {
         JWTVerifier verifier = JWT.require(Algorithm.HMAC256(secret))

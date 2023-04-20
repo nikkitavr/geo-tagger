@@ -1,7 +1,11 @@
 package ru.nikkitavr.geotagger.users_service.dto;
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import ru.nikkitavr.geotagger.users_service.model.User;
 
+@Data
+@NoArgsConstructor
 public class ReceivedInviteDto {
     private long id;
 
@@ -13,19 +17,4 @@ public class ReceivedInviteDto {
         this.senderLogin = sender.getLogin();
     }
 
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public String getSenderLogin() {
-        return senderLogin;
-    }
-
-    public void setSenderLogin(String senderLogin) {
-        this.senderLogin = senderLogin;
-    }
 }

@@ -12,7 +12,7 @@ import java.util.List;
 public class Role extends BaseEntity {
     @Column(name = "role_title")
     private String title;
-    @ManyToMany (cascade=CascadeType.PERSIST)
+    @ManyToMany
     @JoinTable(
             schema = "public",
             name= "roles_users",
