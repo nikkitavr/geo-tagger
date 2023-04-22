@@ -2,7 +2,7 @@ version: "3.7"
 
 services:
   postgress:
-    container_name: gt_users_db
+    container_name: gt_auth_db
     image: postgres:13.3
     environment:
       POSTGRES_DB: "${PG_USER_DB}"
@@ -14,7 +14,7 @@ services:
       - db_data:/var/lib/postgresql/data
     restart: unless-stopped
     ports:
-      - "5430:5432"
+      - "5431:5432"
 
 #именованный том, управляется docker'ом хоста
 volumes:
