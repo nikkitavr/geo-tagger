@@ -1,0 +1,21 @@
+version: "3.7"
+
+services:
+  postgress:
+    container_name: gt_users_db
+    image: postgres:13.3
+    environment:
+      POSTGRES_DB: "${PG_USER_DB}"
+      POSTGRES_USER: "${PG_USER_DB}"
+      POSTGRES_PASSWORD: "${PG_PASSWORD}"
+      PGDATA: "/var/lib/postgresql/data/pgdata"
+    volumes:
+      - ./initdb:/docker-entrypoint-initdb.d
+      - gt_db_data:/var/lib/postgresql/data
+    restart: unless-stopped
+    ports:
+      - "5430:5432"
+
+#именованный том, управляется docker'ом хоста
+volumes:
+  gt_db_data:
